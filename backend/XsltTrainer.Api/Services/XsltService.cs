@@ -33,11 +33,18 @@ public class XsltService : IXsltService
                 };
             }
 
+            // Configure secure XML reader settings to prevent XXE attacks
+            var xmlReaderSettings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Prohibit,
+                XmlResolver = null
+            };
+
             var xslt = new XslCompiledTransform();
-            using var xsltReader = XmlReader.Create(new StringReader(request.XsltTemplate));
+            using var xsltReader = XmlReader.Create(new StringReader(request.XsltTemplate), xmlReaderSettings);
             xslt.Load(xsltReader);
 
-            using var xmlReader = XmlReader.Create(new StringReader(request.XmlInput));
+            using var xmlReader = XmlReader.Create(new StringReader(request.XmlInput), xmlReaderSettings);
             using var stringWriter = new StringWriter();
             using var xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings
             {

@@ -32,7 +32,8 @@ export const xsltService = {
     });
     
     if (!response.ok) {
-      throw new Error('Failed to transform');
+      const errorText = await response.text();
+      throw new Error(`Failed to transform (${response.status}): ${errorText}`);
     }
     
     return response.json();
