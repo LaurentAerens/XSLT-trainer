@@ -1,0 +1,7 @@
+# Azure App Service deployment configuration for the React frontend
+# See: https://docs.microsoft.com/azure/app-service/
+
+# Startup command (not needed for static sites)
+# This file can be used to configure custom build commands if needed
+
+# The frontend will be built and deployed to Azure Static Web Apps or App Service

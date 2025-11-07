@@ -1,0 +1,61 @@
+.exercise-list {
+  padding: 20px;
+}
+
+.exercise-list h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.exercises {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.exercise-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.exercise-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  border-color: #007bff;
+}
+
+.exercise-card h3 {
+  margin: 0 0 10px 0;
+  color: #007bff;
+}
+
+.exercise-card .difficulty {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #007bff;
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.exercise-card .description {
+  color: #666;
+  font-size: 14px;
+  margin: 10px 0 0 0;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.error {
+  color: #dc3545;
+}
