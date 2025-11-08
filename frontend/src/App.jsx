@@ -117,17 +117,69 @@ function App() {
   };
 
   const handlePanelResize = (index, size) => {
+    console.log(`Resizing panel ${index} to width ${size.width}`);
+    // Resize only the dragged panel (index) and its immediate right neighbor (index+1)
     if (containerWidth === 0) return;
-    let newWidth = Math.max(50, size.width); // min 50px
-    newWidth = Math.min(newWidth, containerWidth - 150); // leave at least 150 for others
-    const totalOther = containerWidth - newWidth;
-    const otherCount = 3;
-    const otherWidth = totalOther / otherCount;
+    const min = 50;
+    const maxIndex = Math.min(index + 1, panelWidths.length - 1);
+
+    // New width for the dragged panel (clamped between min and available space)
+    let newWidth = Math.max(min, size.width);
+
+    // Compute the sum of widths for panels that should remain untouched
+    const fixedSum = panelWidths.reduce((s, w, i) => {
+      if (i !== index && i !== maxIndex) return s + w;
+      return s;
+    }, 0);
+
+    // Maximum width we can give to the dragged panel so that neighbor has at least `min` left
+    const maxForIndex = containerWidth - fixedSum - min;
+    newWidth = Math.min(newWidth, maxForIndex);
+
+    const delta = newWidth - panelWidths[index];
+
     const newWidths = [...panelWidths];
     newWidths[index] = newWidth;
-    for (let i = 0; i < 4; i++) {
-      if (i !== index) newWidths[i] = otherWidth;
+    // Reduce/increase the immediate neighbor by the same delta (inverse)
+    newWidths[maxIndex] = Math.max(min, panelWidths[maxIndex] - delta);
+
+    // If rounding left a small difference with container width, repair it by adjusting the last panel
+    const total = newWidths.reduce((s, w) => s + w, 0);
+    const diff = containerWidth - total;
+    if (Math.abs(diff) > 0.5) {
+      // Prefer to correct on the last panel without going below min
+      const lastIdx = newWidths.length - 1;
+      newWidths[lastIdx] = Math.max(min, newWidths[lastIdx] + diff);
     }
+
+    setPanelWidths(newWidths);
+  };
+
+  // Handler for resizing the last panel from its left edge (west handle)
+  const handleLastPanelResizeFromLeft = (size) => {
+    if (containerWidth === 0) return;
+    const min = 50;
+    const lastIdx = 3;
+    const leftIdx = lastIdx - 1;
+
+    // newWidth is the width of the last panel after resize
+    let newWidth = Math.max(min, size.width);
+
+    // Compute delta for last panel
+    const delta = newWidth - panelWidths[lastIdx];
+
+    const newWidths = [...panelWidths];
+    newWidths[lastIdx] = newWidth;
+    // Adjust left neighbor inversely
+    newWidths[leftIdx] = Math.max(min, panelWidths[leftIdx] - delta);
+
+    // Repair any tiny rounding diff
+    const total = newWidths.reduce((s, w) => s + w, 0);
+    const diff = containerWidth - total;
+    if (Math.abs(diff) > 0.5) {
+      newWidths[lastIdx] = Math.max(min, newWidths[lastIdx] + diff);
+    }
+
     setPanelWidths(newWidths);
   };
 
@@ -169,8 +221,9 @@ function App() {
               <h3>XML Input</h3>
               <textarea 
                 value={xmlInput} 
-                onChange={(e) => setXmlInput(e.target.value)} 
-                placeholder="Enter your XML here..."
+                readOnly
+                className="readonly"
+                placeholder="XML loaded from exercise (read-only)"
               />
             </div>
           </ResizableBox>
@@ -190,12 +243,14 @@ function App() {
               <pre>{result}</pre>
             </div>
           </ResizableBox>
-          <ResizableBox width={panelWidths[3]} height={containerHeight} axis="x" onResize={(e, {size}) => handlePanelResize(3, size)} resizeHandles={['e']}>
+
+          {/* Last panel: non-resizable wrapper. The east handle of panel 3 (index 2) controls this boundary. */}
+          <div className="panel-wrapper" style={{ width: panelWidths[3], height: containerHeight }}>
             <div className="panel">
               <h3>Target XML</h3>
               <pre>{targetXml}</pre>
             </div>
-          </ResizableBox>
+          </div>
         </div>
         <div className="button-group">
           <button className="run-button" onClick={handleRun}>Run</button>

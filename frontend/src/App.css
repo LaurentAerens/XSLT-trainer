@@ -9,7 +9,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #f5f5f5;
+  /* slightly darker background for better contrast on dim/low-light monitors */
+  background: #e6eef6;
 }
 
 .app {
@@ -81,10 +82,10 @@ body {
 
 .app-main {
   flex: 1;
-  max-width: 1400px;
+  max-width: none; /* allow full-bleed width on wide screens */
   width: 100%;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 0; /* remove centering so panels can reach edges */
+  padding: 12px; /* small padding around the app content */
 }
 
 .exercise-selector {
@@ -108,17 +109,25 @@ body {
 .panels-container {
   display: flex;
   height: calc(100vh - 250px);
+  width: 100%;
+  /* single bordered group containing all panels */
+  border: 2px solid rgba(0,0,0,0.06);
+  border-radius: 6px;
+  overflow: visible; /* allow handles to be grabbed without being clipped */
 }
 
 .panel {
-  display: inline-block;
-  vertical-align: top;
+  display: flex;
+  flex-direction: column;
   padding: 10px;
   background: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  width: 100%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
   height: 100%;
+  min-width: 50px; /* prevent collapsing */
+  /* separators are handled by the resize handles now */
 }
+
+
 
 .panel h3 {
   margin: 0 0 10px 0;
@@ -136,7 +145,13 @@ body {
   background: #f9f9f9;
   border-radius: 4px;
   width: 100%;
-  height: calc(100% - 40px);
+  flex: 1 1 auto; /* fill available vertical space */
+}
+
+.panel textarea.readonly {
+  background: #f9f9f9; /* match the editable textarea background */
+  color: #333;
+  cursor: default;
 }
 
 .panel pre {
@@ -149,7 +164,75 @@ body {
   white-space: pre-wrap;
   overflow-y: auto;
   width: 100%;
-  height: calc(100% - 40px);
+  flex: 1 1 auto; /* fill available vertical space */
+}
+
+/* Make resizable boxes behave like flex items so they expand to fill available width when needed */
+.react-resizable { /* class added by react-resizable */
+  display: flex;
+  flex-direction: column;
+  position: relative; /* allow absolute positioning for handles */
+}
+
+/* Make each ResizableBox behave like a flex item so they share available width
+   The inline style width provided by ResizableBox will still control size, but
+   flex: 1 ensures boxes can grow/shrink to fill the group's width when necessary. */
+.panels-container > .react-resizable {
+  flex: 1 1 0;
+  min-width: 0; /* allow flex children to shrink properly */
+}
+
+.react-resizable > .panel {
+  /* ensure panel inside ResizableBox stretches to the box size */
+  width: 100% !important;
+}
+
+.panel-wrapper {
+  display: block;
+  height: 100%;
+  min-width: 50px;
+  background: transparent;
+}
+
+/* Make the resize handle more visible as a vertical separator */
+.react-resizable-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 14px; /* larger hit area so users can grab easily */
+  background: transparent;
+  cursor: col-resize;
+  z-index: 50; /* ensure it is above panel content */
+  pointer-events: auto;
+  display: block; /* ensure it's a block for centering */
+  transform: none; /* ensure no rotation on the handle itself */
+}
+
+/* Show a small grab box centered on the separator line */
+.react-resizable-handle::before {
+  content: '';
+  position: absolute;
+  right: -9px; /* shift left by half width (18px/2) to center on separator */
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  width: 18px;
+  height: 24px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border-radius: 0; /* remove rounding to avoid angled appearance */
+}
+
+/* East handle (right side of a panel) */
+.react-resizable-handle.react-resizable-handle-e {
+  right: 0;
+  left: auto;
+}
+
+/* West handle (left side) */
+.react-resizable-handle.react-resizable-handle-w {
+  left: 0;
+  right: auto;
 }
 
 .button-group {
@@ -185,5 +268,11 @@ body {
 
 .clear-button:hover {
   background: #d32f2f;
+}
+
+/* West handles (left-side of a panel) should be positioned at left:0 */
+.react-resizable-handle.react-resizable-handle-w {
+  left: 0;
+  right: auto;
 }
 
