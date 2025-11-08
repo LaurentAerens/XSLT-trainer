@@ -24,6 +24,48 @@ body {
   padding: 40px 20px;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.help-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 1px solid white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.help-button:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.user-info {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-size: 14px;
+}
+
+.user-info button {
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 1px solid white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.user-info button:hover {
+  background: rgba(255,255,255,0.3);
 }
 
 .app-header h1 {
@@ -43,5 +85,105 @@ body {
   width: 100%;
   margin: 0 auto;
   padding: 20px;
+}
+
+.exercise-selector {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.exercise-selector label {
+  font-weight: bold;
+}
+
+.exercise-selector select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.panels-container {
+  display: flex;
+  height: calc(100vh - 250px);
+}
+
+.panel {
+  display: inline-block;
+  vertical-align: top;
+  padding: 10px;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 100%;
+  height: 100%;
+}
+
+.panel h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.panel textarea {
+  resize: none;
+  border: none;
+  outline: none;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  width: 100%;
+  height: calc(100% - 40px);
+}
+
+.panel pre {
+  margin: 0;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  width: 100%;
+  height: calc(100% - 40px);
+}
+
+.button-group {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.run-button {
+  padding: 10px 20px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.run-button:hover {
+  background: #5a6fd8;
+}
+
+.clear-button {
+  padding: 10px 20px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.clear-button:hover {
+  background: #d32f2f;
 }
 
